@@ -28,20 +28,42 @@ export class YoutubeService {
     formData.append('video', video);
     formData.append('title', title);
     formData.append('description', description);
-
-    return this.http.post(`${this.baseUrl}/youtube/upload`, formData);
+  
+    return this.http.post(`${this.baseUrl}/youtube/upload`, formData, { withCredentials: true })
+      .pipe(
+        catchError(error => {
+          console.error('Error uploading video', error);
+          return of(null); // Return null in case of error
+        })
+      );
   }
-
+  
   scheduleVideo(video: File, title: string, description: string, publishDate: string): Observable<any> {
     const formData = new FormData();
     formData.append('video', video);
     formData.append('title', title);
     formData.append('description', description);
     formData.append('publishDate', publishDate);
-
-    return this.http.post(`${this.baseUrl}/youtube/schedule`, formData);
+  
+    return this.http.post(`${this.baseUrl}/youtube/schedule`, formData, { withCredentials: true })
+      .pipe(
+        catchError(error => {
+          console.error('Error scheduling video', error);
+          return of(null); // Return null in case of error
+        })
+      );
   }
-
+  
+  logout(): Observable<any> {
+    return this.http.post(`${this.baseUrl}/youtube/logout`, {}, { withCredentials: true })
+      .pipe(
+        catchError(error => {
+          console.error('Error logging out', error);
+          return of(null); // Return null in case of error
+        })
+      );
+  }
+  
   getProfile(): Observable<any> {
     return this.http.get(`${this.baseUrl}/youtube/profile`, { withCredentials: true })
       .pipe(
@@ -68,7 +90,13 @@ export class YoutubeService {
     return this.http.delete(`${this.baseUrl}/youtube/comment/delete/${commentId}`);
   }
 
-  logout(): Observable<any> {
-    return this.http.post(`${this.baseUrl}/youtube/logout`, {});
+  getVideos(): Observable<any> {
+    return this.http.get(`${this.baseUrl}/youtube/videos`, { withCredentials: true })
+      .pipe(
+        catchError(error => {
+          console.error('Error fetching videos data', error);
+          return of(null); // Return null in case of error
+        })
+      );
   }
 }
