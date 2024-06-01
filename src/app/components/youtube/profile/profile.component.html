@@ -1,10 +1,13 @@
-<h1>Welcome, {{user.name}}!</h1>
-<p>Here are your videos:</p>
-<ul>
-  <li *ngFor="let video of videos">
-    <img [src]="video.thumbnailUrl" [alt]="video.title" style="width:120px; height:90px;">
-    <a [href]="'https://www.youtube.com/watch?v=' + video.videoId">{{ video.title }}</a> - Views: {{ video.viewCount }} Likes: {{ video.likeCount }}
-    <br>
-    <a [href]="'/youtube/comments/' + video.videoId" target="_blank">Manage Comments</a>
-  </li>
-</ul>
+<!-- profile.component.html -->
+<div class="profile">
+  <app-sidebar></app-sidebar>
+  <div *ngIf="!profile">
+    <p>You are not logged in.</p>
+    <button (click)="login()">Login with YouTube</button>
+  </div>
+  <div *ngIf="profile">
+    <h2>Welcome, {{ profile.name }}</h2>
+    <p>Email: {{ profile.email }}</p>
+    <!-- Add other profile details here -->
+  </div>
+</div>

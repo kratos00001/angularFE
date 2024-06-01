@@ -7,12 +7,14 @@ export class AuthService {
 
   private isAuthenticated = false;
 
-  constructor() { }
+  constructor() {
+    this.isAuthenticated = localStorage.getItem('isAuthenticated') === 'true';
+  }
 
   login(username: string, password: string): boolean {
-    // Hardcoded credentials
     if (username === 'admin' && password === 'admin') {
       this.isAuthenticated = true;
+      localStorage.setItem('isAuthenticated', 'true');
       return true;
     }
     return false;
@@ -20,6 +22,7 @@ export class AuthService {
 
   logout(): void {
     this.isAuthenticated = false;
+    localStorage.setItem('isAuthenticated', 'false');
   }
 
   isLoggedIn(): boolean {

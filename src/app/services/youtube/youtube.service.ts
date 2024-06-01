@@ -1,15 +1,27 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
 export class YoutubeService {
 
-  private baseUrl = 'http://localhost:3000';  // Update this with your actual backend URL
+  public baseUrl = 'https://localhost:3000';  // Update this with your actual backend URL
 
   constructor(private http: HttpClient) { }
+
+  isLoggedIn(): Observable<boolean> {
+    return this.http.get<{ loggedIn: boolean }>(`${this.baseUrl}/auth/check`, { withCredentials: true })
+      .pipe(
+        map(response => response.loggedIn)
+      );
+  }
+
+  youtubeLogin(): void {
+    window.location.href = `${this.baseUrl}/auth/youtube`;
+  }
 
   uploadVideo(video: File, title: string, description: string): Observable<any> {
     const formData = new FormData();
@@ -31,7 +43,13 @@ export class YoutubeService {
   }
 
   getProfile(): Observable<any> {
-    return this.http.get(`${this.baseUrl}/youtube/profile`);
+    return this.http.get(`${this.baseUrl}/youtube/profile`, { withCredentials: true })
+      .pipe(
+        catchError(error => {
+          console.error('Error fetching profile data', error);
+          return of(null); // Return null in case of error
+        })
+      );
   }
 
   getComments(videoId: string): Observable<any> {
